@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apple Wallet Pass</title>
+    <meta charset="UTF-8">
+    <style>
+        #content {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #submitImage {
+            width: 300px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <form id="form" action="applewallet.php" method="post">
+            <input type="image" src="wallet-button.png" alt="Create pass" id="submitImage">
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                fetch('applewallet.php', {
+                    method: 'POST',
+                }).then(function(res) {
+                    return res.blob();
+                }).then(function(blob) {
+                    // Create a URL for the blob and trigger the download
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'pass.pkpass'; // You can set the name of the downloaded file
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                }).catch(function(err) {
+                    console.error('Error:', err);
+                    document.getElementById('message').innerText = 'An error occurred while generating the pass.';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
